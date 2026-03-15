@@ -19,7 +19,7 @@ jobs:
 
       - name: Update kubeconfig
         run: |
-          aws eks update-kubeconfig --region eu-north-1 --name amazing-classical-sheepdog
+          aws eks update-kubeconfig --region eu-north-1 --name eks-cluster
 
       - name: Deploy to Kubernetes
         run: |
