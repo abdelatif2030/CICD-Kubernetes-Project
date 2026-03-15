@@ -9,7 +9,7 @@ This project demonstrates a full **CI/CD pipeline** for a Python Flask applicati
 - [Prerequisites](#prerequisites)
 - [Project Structure](#project-structure)
 - [Local Testing (Minikube)](#local-testing-minikube)
-- [AWS Setup](#aws-setup)
+- [AWS Setup](#aws-setup) using terraform
 - [GitHub Actions Workflow](#github-actions-workflow)
 - [Deployment](#deployment)
   
