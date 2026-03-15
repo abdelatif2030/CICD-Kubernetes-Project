@@ -93,9 +93,52 @@ Open http://localhost:5000 in your browser.
 AWS Setup
 1. Create EKS Cluster
 
-Use the AWS Console:
+### **1. Create EKS Cluster using Terraform**
+Instead of manually creating the cluster, this project uses **Terraform** to provision the AWS infrastructure, including:
 
-Cluster name: devops-flask-cluster
+- **EKS Cluster**
+- **Node Group** (t3.micro for Free Tier)
+- **IAM Roles and Policies** for cluster and nodes
+- **VPC, Subnets, Security Groups** for Kubernetes networking
+
+This ensures **Infrastructure as Code (IaC)** and makes it reproducible.
+
+**Example Terraform steps:**
+
+1. Initialize Terraform:
+
+```bash
+terraform init
+Review plan:
+
+terraform plan
+
+Apply configuration:
+
+terraform apply
+
+After Terraform completes, you will have:
+
+EKS cluster ready
+
+Node group deployed
+
+IAM roles and policies attached
+
+VPC & networking configured
+
+2. Configure kubeconfig
+
+Once the cluster is created by Terraform:
+
+aws eks --region eu-north-1 update-kubeconfig --name <cluster_name>
+kubectl get nodes
+
+This allows kubectl and GitHub Actions workflows to connect and deploy your application.
+
+option 2 Use the AWS Console:
+
+Cluster name: eks-cluster
 
 Kubernetes version: latest stable
 
@@ -112,6 +155,7 @@ Attach policies: AmazonEKSNodePolicy, AmazonEKSWorkerNodePolicy, AmazonEC2Contai
 2. Configure kubeconfig
 aws eks --region eu-north-1 update-kubeconfig --name devops-flask-cluster
 kubectl get nodes
+
 3. Push Docker Image to ECR
 aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin <account_id>.dkr.ecr.eu-north-1.amazonaws.com
 docker tag devops-flask-app:latest <account_id>.dkr.ecr.eu-north-1.amazonaws.com/devops-flask-app:latest
