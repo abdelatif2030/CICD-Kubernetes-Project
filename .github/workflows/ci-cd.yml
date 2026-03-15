@@ -1,0 +1,61 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # كل push على main هتشغل الـ workflow
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1️⃣ Checkout الكود
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    # 2️⃣ تثبيت dependencies وتشغيل tests
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    - name: Install dependencies
+      run: |
+        pip install -r app/requirements.txt
+
+    - name: Run tests
+      run: |
+        echo "Add your tests here if any"
+
+    # 3️⃣ تسجيل الدخول لـ AWS ECR
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-north-1
+
+    - name: Log in to AWS ECR
+      uses: aws-actions/amazon-ecr-login@v2
+
+    # 4️⃣ Build Docker image
+    - name: Build Docker image
+      run: |
+        docker build -t devops-flask-app -f docker/Dockerfile .
+        docker tag devops-flask-app:latest 500330120032.dkr.ecr.eu-north-1.amazonaws.com/devops-flask-app:latest
+
+    # 5️⃣ Push Docker image لـ AWS ECR
+    - name: Push Docker image to ECR
+      run: |
+        docker push 500330120032.dkr.ecr.eu-north-1.amazonaws.com/devops-flask-app:latest
+
+    # 6️⃣ Deploy على Kubernetes (EKS)
+    - name: Update kubeconfig
+      run: |
+        aws eks update-kubeconfig --region eu-north-1 --name YOUR_CLUSTER_NAME
+
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f k8s/deployment.yaml
+        kubectl apply -f k8s/service.yaml
