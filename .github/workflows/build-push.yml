@@ -1,0 +1,32 @@
+name: Build and Push Docker Image
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
+
+jobs:
+  build_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+
+      - name: Log in to AWS ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t devops-flask-app -f docker/Dockerfile .
+          docker tag devops-flask-app:latest 500330120032.dkr.ecr.eu-north-1.amazonaws.com/devops-flask-app:latest
+
+      - name: Push Docker image
+        run: docker push 500330120032.dkr.ecr.eu-north-1.amazonaws.com/devops-flask-app:latest
