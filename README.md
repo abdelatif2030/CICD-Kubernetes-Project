@@ -12,7 +12,7 @@ This project demonstrates a full **CI/CD pipeline** for a Python Flask applicati
 - [AWS Setup](#aws-setup)
 - [GitHub Actions Workflow](#github-actions-workflow)
 - [Deployment](#deployment)
-- [Optional Enhancements](#optional-enhancements)
+  
 
 ---
 
