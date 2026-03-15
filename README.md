@@ -46,18 +46,19 @@ This project demonstrates:
 
 
 CICD-Kubernetes-Project/
-├─ app/ # Flask application code
-│ └─ main.py
-├─ docker/ # Dockerfile
-│ └─ Dockerfile
-├─ k8s/ # Kubernetes manifests
-│ ├─ deployment.yaml
-│ └─ service.yaml
+├─ app/                        # Flask application code
+│  ├─ main.py                  # Main Flask app
+│  └─ requirements.txt         # Python dependencies
+├─ docker/                     # Docker configuration
+│  └─ Dockerfile               # Build Docker image
+├─ k8s/                        # Kubernetes manifests
+│  ├─ deployment.yaml          # Deployment manifest
+│  └─ service.yaml             # Service manifest
 └─ .github/
-└─ workflows/
-├─ ci.yml # CI workflow
-├─ build-push.yml # Build & push Docker image
-└─ deploy.yml # Deploy to EKS
+   └─ workflows/
+      ├─ ci.yml                # CI workflow: tests & lint
+      ├─ build-push.yml        # Build Docker image & push to ECR
+      └─ deploy.yml            # Deploy to EKS
 
 
 ---
