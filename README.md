@@ -1,4 +1,4 @@
-# DevOps CI/CD Kubernetes Project
+# CI/CD Kubernetes Project
 
 This project demonstrates a full **CI/CD pipeline** for a Python Flask application using **Docker**, **GitHub Actions**, and **AWS EKS (Kubernetes)**. The pipeline automatically builds, tests, pushes the Docker image to **AWS ECR**, and deploys it on an **EKS cluster**.
 
