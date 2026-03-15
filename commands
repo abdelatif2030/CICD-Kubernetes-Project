@@ -1,0 +1,73 @@
+# 1. Python environment & requirements
+pip install -r requirements.txt
+
+# 2. Docker build & push
+docker build -t cicd-k8s-app ./docker
+aws ecr create-repository --repository-name devops-flask-app
+aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 500330120032.dkr.ecr.eu-north-1.amazonaws.com
+docker tag cicd-k8s-app:latest 500330120032.dkr.ecr.eu-north-1.amazonaws.com/devops-flask-app:latest
+docker push 500330120032.dkr.ecr.eu-north-1.amazonaws.com/devops-flask-app:latest
+
+# 3. Kubernetes cluster setup (Minikube / EKS)
+minikube start
+aws eks --region eu-north-1 update-kubeconfig --name eks-cluster
+kubectl config current-context
+kubectl get nodes
+
+# 4. Kubernetes secrets for ECR access
+kubectl create secret docker-registry ecr-secret \
+  --docker-server=500330120032.dkr.ecr.eu-north-1.amazonaws.com \
+  --docker-username=AWS \
+  --docker-password=$(aws ecr get-login-password --region eu-north-1)
+kubectl get secrets
+
+# 5. Deploying application
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+
+# 6. Verify pods and services
+kubectl get pods -o wide
+kubectl get svc -o wide
+kubectl describe pod <pod-name>   # إذا فيه Pod Pending أو Error
+
+# 7. Cleanup (if needed)
+kubectl delete pod --all --grace-period=0 --force
+kubectl delete deployment flask-devops-app
+kubectl delete secret --all
+kubectl delete all --all# 1. Python environment & requirements
+pip install -r requirements.txt
+
+# 2. Docker build & push
+docker build -t cicd-k8s-app ./docker
+aws ecr create-repository --repository-name devops-flask-app
+aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 500330120032.dkr.ecr.eu-north-1.amazonaws.com
+docker tag cicd-k8s-app:latest 500330120032.dkr.ecr.eu-north-1.amazonaws.com/devops-flask-app:latest
+docker push 500330120032.dkr.ecr.eu-north-1.amazonaws.com/devops-flask-app:latest
+
+# 3. Kubernetes cluster setup (Minikube / EKS)
+minikube start
+aws eks --region eu-north-1 update-kubeconfig --name eks-cluster
+kubectl config current-context
+kubectl get nodes
+
+# 4. Kubernetes secrets for ECR access
+kubectl create secret docker-registry ecr-secret \
+  --docker-server=500330120032.dkr.ecr.eu-north-1.amazonaws.com \
+  --docker-username=AWS \
+  --docker-password=$(aws ecr get-login-password --region eu-north-1)
+kubectl get secrets
+
+# 5. Deploying application
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+
+# 6. Verify pods and services
+kubectl get pods -o wide
+kubectl get svc -o wide
+kubectl describe pod <pod-name>   # إذا فيه Pod Pending أو Error
+
+# 7. Cleanup (if needed)
+kubectl delete pod --all --grace-period=0 --force
+kubectl delete deployment flask-devops-app
+kubectl delete secret --all
+kubectl delete all --all
