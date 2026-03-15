@@ -153,7 +153,7 @@ Nodes: 1–2
 Attach policies: AmazonEKSNodePolicy, AmazonEKSWorkerNodePolicy, AmazonEC2ContainerRegistryReadOnly
 
 2. Configure kubeconfig
-aws eks --region eu-north-1 update-kubeconfig --name devops-flask-cluster
+aws eks --region eu-north-1 update-kubeconfig --name eks-cluster
 kubectl get nodes
 
 3. Push Docker Image to ECR
